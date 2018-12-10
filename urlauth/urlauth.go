@@ -2,7 +2,7 @@ package urlauth
 
 import (
 	"crypto/md5"
-	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/url"
@@ -45,10 +45,7 @@ func SignURL(plainURL, secret string, expirationTime *time.Time) (string, error)
 
 	// calculate signature and URL-safe base64-encode
 	digest := md5.Sum([]byte(requestPathBuilder.String()))
-	signature := base64.StdEncoding.EncodeToString(digest[:])
-	signature = strings.Replace(signature, "+", "-", -1)
-	signature = strings.Replace(signature, "/", "_", -1)
-	signature = strings.Replace(signature, "=", "", -1)
+	signature := hex.EncodeToString(digest[:])
 
 	// construct the new request query params with signature and expiration time
 	queryParamsBuilder := &strings.Builder{}

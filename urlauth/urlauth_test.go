@@ -50,11 +50,10 @@ func TestSignURL(t *testing.T) {
 		{
 			name: "Valid URL with a query param",
 			args: args{
-				url:            "https://www.example.com/foo?bar=1",
-				secret:         "supersecret",
-				expirationTime: &expirationTime,
+				url:    "https://www.example.com/foo?bar=1",
+				secret: "supersecret", expirationTime: &expirationTime,
 			},
-			want: "https://www.example.com/foo?bar=1&e=1544720086&st=uAUyDXBthQESStkHpQX76w",
+			want: "https://www.example.com/foo?bar=1&e=1544720086&st=b805320d706d8501124ad907a505fbeb",
 		},
 		{
 			name: "Valid URL without a query-param",
@@ -63,7 +62,7 @@ func TestSignURL(t *testing.T) {
 				secret:         "supersecret",
 				expirationTime: &expirationTime,
 			},
-			want: "https://www.example.com/foo?e=1544720086&st=8I1tmQSt_WpPYoe2lbaKjg",
+			want: "https://www.example.com/foo?e=1544720086&st=f08d6d9904adfd6a4f6287b695b68a8e",
 		},
 		{
 			name: "Valid URL path without an expiration time",
@@ -80,7 +79,7 @@ func TestSignURL(t *testing.T) {
 				secret:         "supersecret",
 				expirationTime: &expirationTime,
 			},
-			want: "/foo?bar=1&e=1544720086&st=uAUyDXBthQESStkHpQX76w",
+			want: "/foo?bar=1&e=1544720086&st=b805320d706d8501124ad907a505fbeb",
 		},
 		{
 			name: "Valid URL path without a query-param",
@@ -89,7 +88,7 @@ func TestSignURL(t *testing.T) {
 				secret:         "supersecret",
 				expirationTime: &expirationTime,
 			},
-			want: "/foo?e=1544720086&st=8I1tmQSt_WpPYoe2lbaKjg",
+			want: "/foo?e=1544720086&st=f08d6d9904adfd6a4f6287b695b68a8e",
 		},
 	}
 	for _, tt := range tests {
