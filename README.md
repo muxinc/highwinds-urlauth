@@ -1,5 +1,5 @@
 # highwinds-urlauth
-Golang library to sign Hgihwinds CDN URLs.  This prevents tampering and allows for automatic expiration of URLs.
+Golang library to sign Highwinds CDN URLs.  This prevents tampering and allows for automatic expiration of URLs.
 
 ## Highwinds Configuration
 Use the following settings in the Highwinds Striketracker `Content Access Authentication` section for URL Signing:
