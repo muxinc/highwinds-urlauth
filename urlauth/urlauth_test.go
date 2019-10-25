@@ -56,6 +56,22 @@ func TestSignURL(t *testing.T) {
 			want: "https://www.example.com/foo?bar=1&e=1544720086&st=b805320d706d8501124ad907a505fbeb",
 		},
 		{
+			name: "URL with multiple query params where one of the params has an equal sign and no value",
+			args: args{
+				url:    "https://www.example.com/foo?bar=&baz=ok",
+				secret: "supersecret", expirationTime: &expirationTime,
+			},
+			wantErr: true,
+		},
+		{
+			name: "URL with multiple query params where one of the params has an equal sign and no value",
+			args: args{
+				url:    "https://www.example.com/foo?bar=ok&baz=",
+				secret: "supersecret", expirationTime: &expirationTime,
+			},
+			wantErr: true,
+		},
+		{
 			name: "Valid URL without a query-param",
 			args: args{
 				url:            "https://www.example.com/foo",
@@ -102,5 +118,13 @@ func TestSignURL(t *testing.T) {
 				t.Errorf("SignURL() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func Benchmark_URLAuth_SignURL(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		if _, err := SignURL("https://www.example.com/foo?bar=1", "supersecret", &expirationTime); err != nil {
+			b.Logf("URLAuth.SignURL() error = %v", err)
+		}
 	}
 }
