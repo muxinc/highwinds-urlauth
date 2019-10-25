@@ -30,6 +30,10 @@ func SignURL(plainURL, secret string, expirationTime *time.Time) (string, error)
 		return "", fmt.Errorf("Error parsing plain URL prior to signing: %v", err)
 	}
 
+	if strings.Contains(inputURL.RawQuery, "=&") || strings.HasSuffix(inputURL.RawQuery, "=") {
+		return "", errors.New("URL query parameters included key with empty value")
+	}
+
 	// build up request path and query params for signing
 	requestPathBuilder := &strings.Builder{}
 	requestPathBuilder.WriteString(inputURL.Path)
@@ -41,7 +45,10 @@ func SignURL(plainURL, secret string, expirationTime *time.Time) (string, error)
 
 	expirationTimeSeconds := expirationTime.Unix()
 	expirationSecondsStr := strconv.FormatInt(expirationTimeSeconds, 10)
-	requestPathBuilder.WriteString(fmt.Sprintf("e=%s&secret=%s", expirationSecondsStr, secret))
+	requestPathBuilder.WriteString("e=")
+	requestPathBuilder.WriteString(expirationSecondsStr)
+	requestPathBuilder.WriteString("&secret=")
+	requestPathBuilder.WriteString(secret)
 
 	// calculate signature and URL-safe base64-encode
 	digest := md5.Sum([]byte(requestPathBuilder.String()))
@@ -53,7 +60,10 @@ func SignURL(plainURL, secret string, expirationTime *time.Time) (string, error)
 		queryParamsBuilder.WriteString(inputURL.RawQuery)
 		queryParamsBuilder.WriteString("&")
 	}
-	queryParamsBuilder.WriteString(fmt.Sprintf("e=%s&st=%s", expirationSecondsStr, signature))
+	queryParamsBuilder.WriteString("e=")
+	queryParamsBuilder.WriteString(expirationSecondsStr)
+	queryParamsBuilder.WriteString("&st=")
+	queryParamsBuilder.WriteString(signature)
 	inputURL.RawQuery = queryParamsBuilder.String()
 
 	return inputURL.String(), nil
